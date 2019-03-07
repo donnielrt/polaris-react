@@ -15,6 +15,8 @@ shared:
       - yarn run build
       - ./.shopify-build/setup-consumer-test.sh web
       - yarn --cwd ./web run build
+    env:
+      SHOPIFY_BUILD_MEMORY_LIMIT: 8g
   build-styleguide: &build-styleguide
     label: 'Build styleguide'
     container: styleguide
