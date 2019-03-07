@@ -6,7 +6,7 @@ import {navigationBarCollapsed} from '../../../../utilities/breakpoints';
 
 import {Context, contextTypes} from '../../types';
 import {withAppProvider, WithAppProviderProps} from '../../../AppProvider';
-import Badge from '../../../Badge';
+import Badge, {Props as BadgeProps} from '../../../Badge';
 import Icon, {Props as IconProps} from '../../../Icon';
 import Indicator from '../../../Indicator';
 import UnstyledLink from '../../../UnstyledLink';
@@ -40,7 +40,7 @@ interface SecondaryAction {
 export interface Props extends ItemURLDetails {
   icon?: IconProps['source'];
   iconBody?: string;
-  badge?: string | null;
+  badge?: string | React.ReactElement<BadgeProps> | null;
   label: string;
   disabled?: boolean;
   accessibilityLabel?: string;
@@ -90,15 +90,12 @@ export class BaseItem extends React.Component<CombinedProps, State> {
       url,
       icon,
       label,
-      badge,
       subNavigationItems = [],
       secondaryAction,
       disabled,
       onClick,
       accessibilityLabel,
       iconBody,
-      new: isNew,
-      polaris: {intl},
       selected: selectedOverride,
     } = this.props;
 
@@ -115,15 +112,6 @@ export class BaseItem extends React.Component<CombinedProps, State> {
         <Indicator pulse />
       </span>
     ) : null;
-
-    const badgeMarkup =
-      badge || isNew ? (
-        <div className={styles.Badge}>
-          <Badge status="new" size="small">
-            {badge || intl.translate('Polaris.Badge.STATUS_LABELS.new')}
-          </Badge>
-        </div>
-      ) : null;
 
     const iconMarkup = iconBody ? (
       <div className={styles.Icon}>
@@ -144,7 +132,7 @@ export class BaseItem extends React.Component<CombinedProps, State> {
           {label}
           {indicatorMarkup}
         </span>
-        {badgeMarkup}
+        {this.getBadgeMarkup()}
       </React.Fragment>
     );
 
@@ -260,6 +248,37 @@ export class BaseItem extends React.Component<CombinedProps, State> {
         {secondaryActionMarkup}
         {secondaryNavigationMarkup}
       </li>
+    );
+  }
+
+  private getBadgeMarkup() {
+    const {
+      badge,
+      new: isNew,
+      polaris: {intl},
+    } = this.props;
+
+    if (badge == null && !isNew) {
+      return null;
+    }
+
+    let badgeMarkup: Props['badge'] = null;
+    if (isNew) {
+      badgeMarkup = intl.translate('Polaris.Badge.STATUS_LABELS.new');
+    } else if (typeof badge === 'string') {
+      badgeMarkup = badge;
+    }
+
+    return (
+      <div className={styles.Badge}>
+        {badgeMarkup ? (
+          <Badge status="new" size="small">
+            {badgeMarkup}
+          </Badge>
+        ) : (
+          badge
+        )}
+      </div>
     );
   }
 

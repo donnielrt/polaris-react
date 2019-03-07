@@ -100,6 +100,65 @@ describe('<Nav.Item />', () => {
       const link = item.find(UnstyledLink);
       expect(link.exists()).toBe(true);
     });
+
+    it('renders a badge if prop is provided', () => {
+      const spy = jest.fn();
+      matchMedia.setMedia(() => ({addListener: spy}));
+      const item = mountWithAppProvider(
+        <Item
+          label="some label"
+          url="/admin/orders"
+          badge="1"
+          subNavigationItems={[
+            {
+              url: '/admin/orders',
+              disabled: false,
+              label: 'orders',
+            },
+          ]}
+        />,
+        {
+          context: {location: '/admin/orders'},
+        },
+      );
+
+      expect(item.find(Badge).exists()).toBe(true);
+    });
+
+    it('renders a badge if a badge element is provided', () => {
+      const spy = jest.fn();
+      matchMedia.setMedia(() => ({addListener: spy}));
+      const item = mountWithAppProvider(
+        <Item
+          label="some label"
+          url="/admin/orders"
+          badge={<Badge>Custom badge</Badge>}
+        />,
+        {
+          context: {location: '/admin/orders'},
+        },
+      );
+
+      expect(item.find(Badge).text()).toContain('Custom badge');
+    });
+
+    it('renders a new badge even if a badge prop is provided', () => {
+      const spy = jest.fn();
+      matchMedia.setMedia(() => ({addListener: spy}));
+      const item = mountWithAppProvider(
+        <Item
+          label="some label"
+          url="/admin/orders"
+          badge={<Badge>Custom badge</Badge>}
+          new
+        />,
+        {
+          context: {location: '/admin/orders'},
+        },
+      );
+
+      expect(item.find(Badge).text()).toContain('New');
+    });
   });
 
   describe('with SubNavigationItems', () => {
