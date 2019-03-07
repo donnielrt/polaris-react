@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import {classNames} from '@shopify/react-utilities/styles';
-import {autobind, memoize} from '@shopify/javascript-utilities/decorators';
+import {autobind} from '@shopify/javascript-utilities/decorators';
+import {memoize} from '@shopify/decorators';
 import {createUniqueIDFactory} from '@shopify/javascript-utilities/other';
 
 import Collapsible from '../../../Collapsible';
